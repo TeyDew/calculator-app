@@ -1,30 +1,37 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view/>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@font-face {
+  font-family: "Poppins-Bold";
+  src: local("Poppins-Bold"), url("./assets/font/Poppins-Bold.ttf") format("opentype");
+}
+@font-face {
+  font-family: "Poppins-Black";
+  src: local("Poppins-Black"), url("./assets/font/Poppins-Black.ttf") format("opentype");
+}
+@font-face {
+  font-family: "Poppins-Light";
+  src: local("Poppins-Light"), url("./assets/font/Poppins-Light.ttf") format("opentype");
+}
+@font-face {
+  font-family: "Poppins-Medium";
+  src: local("Poppins-Medium"), url("./assets/font/Poppins-Medium.ttf") format("opentype");
+}
+@font-face {
+  font-family: "Poppins-Regular";
+  src: local("Poppins-Regular"), url("./assets/font/Poppins-Regular.ttf") format("opentype");
+}
+@font-face {
+  font-family: "Poppins-SemiBold";
+  src: local("Poppins-Semi-Bold"), url("./assets/font/Poppins-SemiBold.ttf") format("opentype");
 }
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing : antialiased;
 }
 </style>
