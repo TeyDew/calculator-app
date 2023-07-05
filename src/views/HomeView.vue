@@ -133,14 +133,6 @@ export default {
         result = result.slice(0, maxLength);
       }
 
-      const lastChar = result.slice(-1);
-      const isLastCharDigit = /\d/.test(lastChar);
-
-      if (!isLastCharDigit) {
-        console.log("test");
-        result = result.slice(0, -1);
-      }
-      
       this.result = result.replace(/(\d)(?=(\d{3})+$)/g, '$1 ');
 
       const baseFontSize = 48;
@@ -153,16 +145,24 @@ export default {
         const extraCharacters = resultLength - 9;
         reducedFontSize -= extraCharacters * fontSizeStep;
       }
-      
+
       if (reducedFontSize >= 24) {
         this.resultFontSize = `${reducedFontSize}px`;
       } else {
         this.resultFontSize = '24px';
       }
+
+      if (!['+', '-', '*', '/'].includes(this.expression.slice(-1))) {
+        this.expression = this.result;
+      }
+      this.previousResult = this.result;
+      this.currentOperator = null;
     },
     clearExpression() {
       this.expression = '';
       this.result = '';
+      this.previousResult = null;
+      this.currentOperator = null;
     },
     removeLastCharacter() {
       this.expression = this.expression.slice(0, -1);
@@ -170,13 +170,25 @@ export default {
     addToExpression(value) {
       const lastChar = this.expression.slice(-1);
 
-      if (['+', '-', '*', '/'].includes(lastChar) && ['+', '-', '*', '/'].includes(value)) {
+      if (value === '.' && lastChar.includes('.')) {
         return;
       }
-      if (this.expression.length >= 20) {
-        return;
+
+      if (['+', '-', '*', '/'].includes(value)) {
+        if (this.currentOperator === null) {
+          if (this.expression === '') {
+            return;
+          }
+          this.expression += ' ' + value + ' ';
+          this.currentOperator = value;
+        } else {
+          this.calculate();
+          this.expression += ' ' + value + ' ';
+          this.currentOperator = value;
+        }
+      } else {
+        this.expression += value;
       }
-      this.expression += value;
     }
   }
 }
