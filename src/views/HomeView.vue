@@ -4,14 +4,22 @@
     <nav class="settings">
       <ul>
         <li>
-          <span>Thème</span>
-          <input class="tgl tgl-flat" id="cb1" type="checkbox" v-model="darkTheme"/>
-          <label class="tgl-btn" for="cb1"></label>
+          <h2 id="theme-title">Theme</h2>
+          <div class="toggle-switch">
+            <label class="switch-label">
+              <input type="checkbox" class="checkbox" v-model="darkTheme">
+              <span class="slider"></span>
+            </label>
+          </div>
         </li>
         <li>
-          <span>Transparence</span>
-          <input class="tgl tgl-flat" id="cb2" type="checkbox" v-model="transparent" checked/>
-          <label class="tgl-btn" for="cb2"></label>
+          <h2>Opacity</h2>
+          <div class="toggle-switch toggle-transparent">
+            <label class="switch-label">
+              <input type="checkbox" class="checkbox" v-model="transparent">
+              <span class="slider"></span>
+            </label>
+          </div>
         </li>
       </ul>
     </nav>
@@ -283,12 +291,29 @@ export default {
     addToExpression(value) {
       const lastChar = this.expression.slice(-1);
 
-      if (value === '.' && lastChar.includes('.')) {
+      if (value === '.' && lastChar.includes('.') || value === '%' && lastChar.includes('%') || value === '²' && lastChar.includes('²')) {
         return;
+      }
+
+      const piValue = '3.14159';
+      const eulerValue = '2.71828';
+
+      if (value === piValue || value === eulerValue) {
+        if (lastChar === piValue || lastChar === eulerValue) {
+          return;
+        } else if (lastChar && !['+', '-', '*', '/', ' '].includes(lastChar)) {
+          return;
+        }
       }
 
       if (['+', '-', '*', '/', '²'].includes(value)) {
         if (['+', '-', '*', '/', ' '].includes(lastChar)) {
+          return;
+        }
+        const regex = /(\d+(?:\.\d*)?)$/;
+        const matches = this.expression.match(regex);
+        if (!matches) {
+          this.expression += value;
           return;
         }
         this.calculate();
@@ -300,9 +325,12 @@ export default {
         }
       } else {
         if (this.egalJustClciked) {
-          this.expression = this.result.replace(/\s/g, '') + value;
+          this.expression = this.result.replace(/\s/g, '') + '+' + value;
           this.egalJustClciked = false;
         } else {
+          if (value === '.' && /\d*\.\d*$/.test(this.expression)) {
+            return;
+          }
           this.expression += value;
         }
       }
@@ -319,6 +347,7 @@ export default {
   color: #424242;
   position: relative;
   font-family: 'Poppins-Regular';
+  overflow: hidden;
   .circle {
     position: absolute;
     top: 50%;
@@ -334,13 +363,12 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 300px;
     padding: 50px;
     ul {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 50px;
+      gap: 25px;
       li {
         width: 100%;
         list-style: none;
@@ -348,71 +376,75 @@ export default {
         justify-content: flex-end;
         align-items: center;
         gap: 20px;
-        .tgl {
-          display: none;
-          &,
-          &:after,
-          &:before,
-          & *,
-          & *:after,
-          & *:before,
-          & + .tgl-btn {
-            box-sizing: border-box;
-            &::selection {
-              background: none;
-            }
-          }
-          
-          + .tgl-btn {
-            outline: 0;
-            display: block;
-            width: 4em;
-            height: 2em;
-            position: relative;
-            cursor: pointer;
-            user-select: none;
-            &:after,
-            &:before {
-              position: relative;
-              display: block;
-              content: "";
-              width: 50%;
-              height: 100%;
-            }
-            
-            &:after {
-              left: 0;
-            }
-            
-            &:before {
-              display: none;
-            }
-          }
-          
-          &:checked + .tgl-btn:after {
-            left: 50%;
+        h2 {
+          text-transform: uppercase;
+          font-family: 'Poppins-Bold';
+          color: #252525;
+          &#theme-title {
+            letter-spacing: .3rem;
           }
         }
-        .tgl-flat {
-          + .tgl-btn {
-            padding: 2px;
-            transition: all .2s ease;
-            background: #ffffff;
-            border: 2px solid #aeddff;
-            border-radius: 2em;
-            &:after {
-              transition: all .2s ease;
-              background: #aeddff;
-              content: "";
-              border-radius: 1em;
+        .toggle-switch {
+          position: relative;
+          width: 70px;
+          height: 30px;
+          --light: #ecf8ff;
+          --dark: #83b9ff;
+          .switch-label {
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            border: 1px solid var(--dark);
+            .checkbox {
+              position: absolute;
+              display: none;
+              &.checkbox:checked ~ .slider {
+                background-color: var(--dark);
+                &::before {
+                  -webkit-transform: translateX(38px);
+                  -ms-transform: translateX(38px);
+                  transform: translateX(38px);
+                  -webkit-box-shadow: inset 10px -3px 0px 0px var(--light);
+                  box-shadow: inset 10px -3px 0px 0px var(--light);
+                }
+              }
+            }
+            .slider {
+              position: absolute;
+              background-color: rgba(255,255,255,.2);
+              width: 100%;
+              height: 100%;
+              border-radius: 25px;
+              -webkit-transition: 0.3s;
+              transition: 0.3s;
+              &::before {
+                content: "";
+                position: absolute;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                top: 4px;
+                left: 5px;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+                background-color: var(--dark);
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+              }
             }
           }
-          
-          &:checked + .tgl-btn {
-            border: 2px solid #109DFF;
-            &:after {
-              left: 50%;
-              background: #109DFF;
+          &.toggle-transparent {
+            .switch-label {
+              .checkbox {
+                &.checkbox:checked ~ .slider {
+                  &::before {
+                    -webkit-box-shadow: inset 0px 0px 0px 2px var(--light);
+                    box-shadow: inset 0px 0px 0px 2px var(--light);
+                  }
+                }
+              }
             }
           }
         }
@@ -437,6 +469,19 @@ export default {
     padding: 33px;
     &.dark {
       background: linear-gradient(223deg, #17181ae0 0%, #17181ab9 100%);
+      position: relative;
+      &::before {
+        z-index: -99;
+        content: '';
+        position: absolute;
+        box-shadow: 0px 0px 50px 50px #0077ff40;   
+        background: #0077ff40;
+        top: 20px;
+        right: 50px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+      }
       .top-section {
         h1 {
           color: white;
@@ -707,6 +752,26 @@ export default {
         }
         p {
           width: 62px;
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 1020px) {
+  .home {
+    .calculator {
+      left: 60%;
+    }
+  }
+}
+@media screen and (max-width: 750px) {
+  .home {
+    .settings {
+      ul {
+        li {
+          h2 {
+            display: none;
+          }
         }
       }
     }
