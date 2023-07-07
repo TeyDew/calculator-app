@@ -22,10 +22,16 @@
           </div>
         </li>
       </ul>
+      <div class="credits">
+        <img class="logo" src="../assets/img/TD-logo-white.png">
+        <div class="credits-box">
+          <p>Made with ❤️ by<br><a href="https://github.com/TeyDew" target="_blank">@TeyDew</a></p>
+        </div>
+      </div>
     </nav>
     <div class="calculator" :class="calculatorClasses">
       <div class="top-section">
-        <span class="operation">{{ expression }}</span>
+        <span class="operation" v-html="formatExpression(expression)"></span>
         <h1 :style="{ fontSize: resultFontSize }">{{ result }}</h1>
       </div>
       <div class="button-section">
@@ -84,6 +90,12 @@
           <button ref="button21" @click="buttonClick('.')">.</button>
           <button ref="button22" class="dblH btnBottom" id="btnEgal" @click="buttonClick('=')">=</button>
         </div>
+      </div>
+    </div>
+    <div class="title">
+      <div class="title-container">
+        <h2>Freebie App</h2>
+        <h1>Freebie: Calculator<br>Vue.js Application<br>User Interface.</h1>
       </div>
     </div>
   </div>
@@ -288,6 +300,9 @@ export default {
     removeLastCharacter() {
       this.expression = this.expression.slice(0, -1);
     },
+    formatExpression(expression) {
+      return expression.replace(/([+\-*/])/g, '<span class="sign-operator">$1</span>');
+    },
     addToExpression(value) {
       const lastChar = this.expression.slice(-1);
 
@@ -343,11 +358,13 @@ export default {
 .home {
   width: 100vw;
   height: 100vh;
-  background: #DAF0FF;
+  background: #A0D7FF;
   color: #424242;
   position: relative;
   font-family: 'Poppins-Regular';
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
   .circle {
     position: absolute;
     top: 50%;
@@ -362,6 +379,7 @@ export default {
     position: fixed;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: 100%;
     padding: 50px;
     ul {
@@ -389,14 +407,14 @@ export default {
           width: 70px;
           height: 30px;
           --light: #ecf8ff;
-          --dark: #83b9ff;
+          --dark: #109DFF;
           .switch-label {
             position: absolute;
             width: 100%;
             height: 30px;
             border-radius: 25px;
             cursor: pointer;
-            border: 1px solid var(--dark);
+            border: 2px solid var(--dark);
             .checkbox {
               position: absolute;
               display: none;
@@ -413,7 +431,7 @@ export default {
             }
             .slider {
               position: absolute;
-              background-color: rgba(255,255,255,.2);
+              background-color: rgb(255, 255, 255);
               width: 100%;
               height: 100%;
               border-radius: 25px;
@@ -425,7 +443,7 @@ export default {
                 border-radius: 50%;
                 width: 20px;
                 height: 20px;
-                top: 4px;
+                top: 3px;
                 left: 5px;
                 -webkit-box-shadow: none;
                 box-shadow: none;
@@ -450,16 +468,34 @@ export default {
         }
       }
     }
+    .credits {
+      text-align: center;
+      font-family: 'Poppins-SemiBold';
+      color: black;
+      .logo {
+        width: 70px;
+      }
+      .credits-box {
+        border-radius: 20px;
+        padding: 10px;
+        p {
+          a {
+            text-decoration: none;
+          }
+        }
+      }
+    }
   }
   .calculator {
     position: relative;
     overflow: hidden;
     width: 375px;
     height: 812px;
-    background: linear-gradient(133deg, #F7F8FB 0%, rgba(247, 248, 251, 0.1) 100%);
+    background: linear-gradient(133deg, #e3eaff 0%, rgba(247, 248, 251, 0.2) 100%);
     backdrop-filter: blur(51px);
     top: 50%;
     left: 45%;
+    z-index: 99;
     transform: translate(-50%, -50%);
     border-radius: 39px;
     transition: all .2s ease-in-out;
@@ -645,8 +681,8 @@ export default {
         font-size: 24px;
         text-align: right;
         word-break: break-all;
-        .sign-operation {
-          color: rgb(16, 157, 255);
+        .sign-operator {
+          color: rgb(16, 157, 255)!important;
         }
       }
       h1 {
@@ -756,6 +792,41 @@ export default {
       }
     }
   }
+  .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 70px;
+    z-index: 10;
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      h2 {
+        width: fit-content;
+        text-transform: uppercase;
+        color: white;
+        background-color: #2CA8FF;
+        padding: 10px 20px;
+        border-radius: 40px;
+        font-size: 20px;
+        letter-spacing: 2px;
+      }
+      h1 {
+        font-family: 'Poppins-Bold';
+        font-size: 50px;
+        line-height: 68px;
+      }
+    }
+  }
+}
+@media screen and (max-width: 1630px) {
+  .home {
+    .title {
+      display: none;
+    }
+  }
 }
 @media screen and (max-width: 1020px) {
   .home {
@@ -769,9 +840,20 @@ export default {
     .settings {
       ul {
         li {
+          justify-content: flex-start;
           h2 {
             display: none;
           }
+        }
+      }
+      .credits {
+        .logo {
+          width: 50px;
+        }
+        .credits-box {
+          font-size: 14px;
+          padding: 5px;
+          border-radius: 10px;
         }
       }
     }

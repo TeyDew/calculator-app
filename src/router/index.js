@@ -18,7 +18,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const pageTitle = to.meta.title;
-  document.title = `${pageTitle} - FluidVisual`;
+  document.title = `${pageTitle} - Calculator App`;
   next();
 });
 
