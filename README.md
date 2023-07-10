@@ -37,7 +37,7 @@ npm install
 npm run serve
 ```
 
-The application will be served locally at http://localhost:8080/. Open this URL in your web browser to view WeatherApp.
+The application will be served locally at http://localhost:8080/. Open this URL in your web browser to view CalculatorApp.
 
 ## Key Features :clipboard:
 :1234: Numeric buttons for entering digits in the mathematical expression.
